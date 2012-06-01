@@ -15,10 +15,9 @@ import org.w3c.dom.NodeList;
 import android.content.Context;
 
 public class MscpDataParser {
-    private static final String TAG ="MscpDataParser";
     
     private static MscpDataParser mInstance = null;
-    private Context mContext = null;
+    private Context mContext;
     
     public interface CallBack {
 		public void onParseCompleted(HashMap<String,String> map);
@@ -41,8 +40,7 @@ public class MscpDataParser {
     public void parse(DatagramPacket dPackage,CallBack callback){
     	if( dPackage == null ){
     		if( callback != null )
-//    		    callback.onError(ErrorCode.ERR_INVALIDE_ARGS, "ERR_INVALIDE_ARGS");
-    		System.out.println("ErrorCode.RET_PARSE_XML_EXCEPTION,PARSE_XML_EXCEPTION");
+    			System.out.println("ErrorCode.RET_PARSE_XML_EXCEPTION,PARSE_XML_EXCEPTION");
     	}
  
     	byte[] bytes = dPackage.getData();
@@ -50,34 +48,24 @@ public class MscpDataParser {
     		int headlen = Tools.byteArrayToInt( bytes );
     		int bodylen = Tools.byteArrayToInt( Tools.subByteArray(bytes, 4, 8) );
     		int version = Tools.byteArrayToInt( Tools.subByteArray(bytes, 8, 12) );
-
-			byte[] data = Tools.subByteArray(bytes, 12, 12+bodylen );//bytes.length);
-			if( data != null && data.length > 0 && data.length == bodylen ){
-				parse( data,bodylen, callback);
-				return;
-			}
-
-    		
-//    		if( headlen == 12 && bodylen > 0 && bodylen <= (bytes.length-12) ){
-//    			byte[] data = Tools.subByteArray(bytes, 12, 12+bodylen );//bytes.length);
-//    			if( data != null && data.length > 0 && data.length == bodylen ){
-//    				parse( data,bodylen, callback);
-//    				return;
-//    			}
-//    			
-//    		}
+    		if( headlen == 12 && bodylen > 0 && bodylen <= (bytes.length-12) ){
+    			byte[] data = Tools.subByteArray(bytes, 12, 12+bodylen );//bytes.length);
+    			if( data != null && data.length > 0 && data.length == bodylen ){
+    				parse( data,bodylen, callback);
+    				return;
+    			}
+    			
+    		}
     	}
     	
     	if( callback != null )
-//    		callback.onError(ErrorCode.ERR_INVALIDE_ARGS, "Data Empty!");
-    	System.out.println("ErrorCode.ERR_INVALIDE_ARGS, Data Empty!");
+    		System.out.println("ErrorCode.ERR_INVALIDE_ARGS, Data Empty!");
     }
     
     public void parse(byte[] data, int length,CallBack callback){
     	if( data == null || length <= 0 ){
     		if( callback != null )
-//    		    callback.onError(ErrorCode.ERR_INVALIDE_ARGS, "ERR_INVALIDE_ARGS");
-    		System.out.println("ErrorCode.ERR_INVALIDE_ARGS, ERR_INVALIDE_ARGS");
+    			System.out.println("ErrorCode.ERR_INVALIDE_ARGS, ERR_INVALIDE_ARGS");
         }
     	InputStream inputStream = null;
     	if( data != null && data.length > 0 ){
@@ -114,13 +102,13 @@ public class MscpDataParser {
 			    	}
 			    }
 			    
+			    
 			    if( callback != null ){
 			    	callback.onParseCompleted( map );
 			    }
 		    }catch( Exception e ) {
 			    e.printStackTrace();
 			    if( callback != null ){
-//			    	callback.onError(ErrorCode.RET_PARSE_XML_EXCEPTION,"PARSE_XML_EXCEPTION");
 			    	System.out.println("ErrorCode.RET_PARSE_XML_EXCEPTION,PARSE_XML_EXCEPTION");
 		        }
 		    }

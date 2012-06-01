@@ -23,8 +23,6 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.SeekBar;
-import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
 import com.rushfusion.screencontroll.bean.STB;
@@ -45,11 +43,6 @@ public class ScreenControlActivity extends Activity {
 	Handler handler;
 	DatagramSocket s = null;
 	List<String> tests;
-	
-	
-	private static final String testTitle = "å¾ÓîMP40301";
-	private static final int testDuration = 304;
-	private static final String testUrl = "http://vodm3u8.test.itv.cn:1124/vod/3dec2ab9670543f3b42500548dee96b1.m3u8?pt=1&ra=1&version=20111201.171008";
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -73,7 +66,7 @@ public class ScreenControlActivity extends Activity {
 		searchBtn = (Button) findViewById(R.id.search);
 		lv = (ListView) findViewById(R.id.listView1);
 		progress = (ProgressBar) findViewById(R.id.progressBar1);
-		mIp.setText("±¾»úip£º" + getLocalIpAddress());
+		mIp.setText("ï¿½ï¿½ï¿½ï¿½ipï¿½ï¿½" + getLocalIpAddress());
 		searchBtn.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -150,7 +143,7 @@ public class ScreenControlActivity extends Activity {
                     System.out.println("receive-->"+str);
 //                    tests.add(str);
                     MscpDataParser.getInstance().init(this);
-	                //µÃµ½udpÊý¾Ý: datagramPacket
+	                //ï¿½Ãµï¿½udpï¿½ï¿½ï¿½: datagramPacket
 	                MscpDataParser.getInstance().parse(packet,new MscpDataParser.CallBack() {
                       @Override
                       public void onParseCompleted(HashMap<String, String> map) {
@@ -209,23 +202,12 @@ public class ScreenControlActivity extends Activity {
 			View v = inflater.inflate(R.layout.stbitem, null);
 			TextView stbName = (TextView) v.findViewById(R.id.stbName);
 			TextView stbIP = (TextView) v.findViewById(R.id.stbName);
-			Button playBtn = (Button) v.findViewById(R.id.playOrPause);
 			Button stopBtn = (Button) v.findViewById(R.id.stop);
-			SeekBar voice = (SeekBar) v.findViewById(R.id.voice);
-			SeekBar duration = (SeekBar) v.findViewById(R.id.duration);
 			
 			STB stb = stbs.get(position);
 			stbName.setText(stb.getUsername());
 			stbIP.setText(stb.getIp());
 
-			playBtn.setOnClickListener(new OnClickListener() {
-				
-				@Override
-				public void onClick(View v) {
-					// TODO Auto-generated method stub
-					play(testTitle,testDuration,testUrl);
-				}
-			});
 			stopBtn.setOnClickListener(new OnClickListener() {
 				
 				@Override
@@ -234,55 +216,7 @@ public class ScreenControlActivity extends Activity {
 					
 				}
 			});
-			voice.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
-				
-				@Override
-				public void onStopTrackingTouch(SeekBar seekBar) {
-					// TODO Auto-generated method stub
-					
-				}
-				
-				@Override
-				public void onStartTrackingTouch(SeekBar seekBar) {
-					// TODO Auto-generated method stub
-					
-				}
-				
-				@Override
-				public void onProgressChanged(SeekBar seekBar, int progress,
-						boolean fromUser) {
-					// TODO Auto-generated method stub
-					
-				}
-			});
-			duration.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
-				
-				@Override
-				public void onStopTrackingTouch(SeekBar seekBar) {
-					// TODO Auto-generated method stub
-					
-				}
-				
-				@Override
-				public void onStartTrackingTouch(SeekBar seekBar) {
-					// TODO Auto-generated method stub
-					
-				}
-				
-				@Override
-				public void onProgressChanged(SeekBar seekBar, int progress,
-						boolean fromUser) {
-					// TODO Auto-generated method stub
-					
-				}
-			});
 			return v;
-			
-		}
-
-		protected void play(String title, int duration, String url) {
-			// TODO Auto-generated method stub
-			
 			
 		}
 		
