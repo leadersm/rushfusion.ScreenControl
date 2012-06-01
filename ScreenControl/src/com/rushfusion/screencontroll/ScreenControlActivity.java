@@ -12,9 +12,17 @@ import java.util.HashMap;
 import java.util.List;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -60,6 +68,43 @@ public class ScreenControlActivity extends Activity {
         mReceiveThread.start();
 	}
 
+
+	/**
+	 * 检查网络连接是否可用
+	 * @param context
+	 * @return
+	 */
+	public static boolean checkNetworking(Context context) {
+		ConnectivityManager cm = (ConnectivityManager) context
+				.getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo nwi = cm.getActiveNetworkInfo();
+		if(nwi!=null){
+			return nwi.isAvailable();
+		}
+		return false;
+	}
+	
+	@Override
+	protected Dialog onCreateDialog(int id) {
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setTitle("网络连接提示");
+		builder.setMessage("当前没有可用网络，是否设置?") 
+		.setCancelable(false) 
+		.setPositiveButton("设置", new DialogInterface.OnClickListener() { 
+			public void onClick(DialogInterface dialog, int id) { 
+				Intent intent = new Intent(Settings.ACTION_WIRELESS_SETTINGS);
+				startActivity(intent);
+			}
+		}) 
+		.setNegativeButton("退出", new DialogInterface.OnClickListener() { 
+			public void onClick(DialogInterface dialog, int id) { 
+				finish();
+			} 
+		}); 
+		return builder.create();
+	}
+	
+	
 	private void findByIds() {
 		inflater = LayoutInflater.from(this);
 		mIp = (TextView) findViewById(R.id.mIp);
