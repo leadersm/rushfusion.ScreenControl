@@ -111,7 +111,7 @@ public class ScreenControlActivity extends Activity {
 		searchBtn = (Button) findViewById(R.id.search);
 		lv = (ListView) findViewById(R.id.listView1);
 		progress = (ProgressBar) findViewById(R.id.progressBar1);
-		mIp.setText("����ip��" + getLocalIpAddress());
+		mIp.setText("ip-->" + getLocalIpAddress());
 		searchBtn.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {

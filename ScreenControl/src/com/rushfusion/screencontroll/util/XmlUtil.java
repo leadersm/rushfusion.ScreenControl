@@ -8,13 +8,13 @@ public class XmlUtil {
 	public static byte[] SearchReq(String taskno, String mip) {
 		String xml = "<?xml version=\"1.0\" encoding=\"utf-8\" ?>"
 				+ "<Package> "
-				// <!¡ª ÃüÁîÃû³Æ -->
+				// <!â€” å‘½ä»¤åç§° -->
 				+ "<Property  name = 'cmd' vaule = 'stbresp' /> "
-				// <!¡ª ½«ÇëÇóÈÎÎñÐòºÅ»Ø´«¸ø¿Í»§¶Ë -->
+				// <!â€” å°†è¯·æ±‚ä»»åŠ¡åºå·å›žä¼ ç»™å®¢æˆ·ç«¯ -->
 				+ "<Property  name = 'taskno' vaule = '" + taskno + "' /> "
-				// <!¡ª ¿Í»§¶ËÄÚÍøIP£¬¿ÉÒÔÓÃÓÚ»ú¶¥ºÐÇø·Ö¶à¸ö¿Í»§¶ËµÄÇëÇó -->
+				// <!â€” å®¢æˆ·ç«¯å†…ç½‘IPï¼Œå¯ä»¥ç”¨äºŽæœºé¡¶ç›’åŒºåˆ†å¤šä¸ªå®¢æˆ·ç«¯çš„è¯·æ±‚ -->
 				+ "<Property  name = 'IP' vaule = '" + mip + "' /> "
-				// <!¡ª ¿Í»§¶ËÕìÌý¶Ë¿ÚºÅ -->
+				// <!â€” å®¢æˆ·ç«¯ä¾¦å¬ç«¯å£å· -->
 				+ "<Property  name = 'port' vaule = '"+ stbPort +"' /> " 
 				+ "</Package>";
 		byte[] xml_bytes = xml.getBytes();
@@ -35,19 +35,19 @@ public class XmlUtil {
 	public static byte[] PlayReq(String taskno,String mip,String title,String duration,String url) {
 		String xml = "<?xml version=\"1.0\" encoding=\"utf-8\" ?>"
 				+ "<Package> "
-				// <!¡ª ÃüÁîÃû³Æ -->
+				// <!â€” å‘½ä»¤åç§° -->
 				+ "<Property  name = 'cmd' vaule = 'playreq' /> "
-				// <!¡ª ½«ÇëÇóÈÎÎñÐòºÅ»Ø´«¸ø¿Í»§¶Ë -->
+				// <!â€” å°†è¯·æ±‚ä»»åŠ¡åºå·å›žä¼ ç»™å®¢æˆ·ç«¯ -->
 				+ "<Property  name = 'taskno' vaule = '" + taskno + "' /> "
-				// <!¡ª ¿Í»§¶ËÄÚÍøIP£¬¿ÉÒÔÓÃÓÚ»ú¶¥ºÐÇø·Ö¶à¸ö¿Í»§¶ËµÄÇëÇó -->
+				// <!â€” å®¢æˆ·ç«¯å†…ç½‘IPï¼Œå¯ä»¥ç”¨äºŽæœºé¡¶ç›’åŒºåˆ†å¤šä¸ªå®¢æˆ·ç«¯çš„è¯·æ±‚ -->
 				+ "<Property  name = 'IP' vaule = '" + mip + "' /> "
-				// <!¡ª ¿Í»§¶ËÕìÌý¶Ë¿ÚºÅ -->
+				// <!â€” å®¢æˆ·ç«¯ä¾¦å¬ç«¯å£å· -->
 				+ "<Property  name = 'port' vaule = '"+ stbPort +"' /> " 
-				// <!¡ª ²¥·Åurl -->
+				// <!â€” æ’­æ”¾url -->
 				+ "<Property  name = 'url' vaule = '" + url + "' /> "
-				// <!¡ª ½ÚÄ¿Ãû³Æ -->
+				// <!â€” èŠ‚ç›®åç§° -->
 				+ "<Property  name = 'title' vaule = '" + title + "' /> "
-				// <!¡ª ½ÚÄ¿Ê±³¤ -->
+				// <!â€” èŠ‚ç›®æ—¶é•¿ -->
 				+ "<Property  name = 'duration' vaule = '" + duration + "' /> "
 				+ "</Package>";
 		byte[] xml_bytes = xml.getBytes();
