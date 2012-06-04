@@ -11,23 +11,23 @@ public class STB {
 	public STB() {
 	}
 
-	public STB(String paramString1, String paramString2, String paramString3,
-			String paramString4, String paramString5) {
-		this.ip = paramString1;
-		this.taskno = paramString2;
-		this.username = paramString3;
-		this.password = paramString4;
-		this.mcid = paramString5;
+	public STB(String ip, String taskno, String username,
+			String password, String mcid) {
+		this.ip = ip;
+		this.taskno = taskno;
+		this.username = username;
+		this.password = password;
+		this.mcid = mcid;
 	}
 
-	public STB(String paramString1, String paramString2, String paramString3,
-			String paramString4, String paramString5, PlayStatus paramPlayStatus) {
-		this.ip = paramString1;
-		this.taskno = paramString2;
-		this.username = paramString3;
-		this.password = paramString4;
-		this.mcid = paramString5;
-		this.playStatus = paramPlayStatus;
+	public STB(String ip, String taskno, String username,
+			String password, String mcid, PlayStatus playStatus) {
+		this.ip = ip;
+		this.taskno = taskno;
+		this.username = username;
+		this.password = password;
+		this.mcid = mcid;
+		this.playStatus = playStatus;
 	}
 
 	public String getIp() {

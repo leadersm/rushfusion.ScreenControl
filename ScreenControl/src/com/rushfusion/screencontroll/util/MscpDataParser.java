@@ -42,7 +42,6 @@ public class MscpDataParser {
     		if( callback != null )
     			System.out.println("ErrorCode.RET_PARSE_XML_EXCEPTION,PARSE_XML_EXCEPTION");
     	}
- 
     	byte[] bytes = dPackage.getData();
     	if( bytes != null && bytes.length > 12 ){ //The header of protocol is 12 bytes
     		int headlen = Tools.byteArrayToInt( bytes );
