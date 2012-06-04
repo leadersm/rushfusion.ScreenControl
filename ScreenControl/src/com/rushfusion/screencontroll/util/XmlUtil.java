@@ -3,7 +3,7 @@ package com.rushfusion.screencontroll.util;
 
 public class XmlUtil {
 
-	public static final int stbPort = 6801; 
+	public static final int stbPort = 6802; 
 
 	public static byte[] SearchReq(String taskno, String mip) {
 		String xml = "<?xml version=\"1.0\" encoding=\"utf-8\" ?>"

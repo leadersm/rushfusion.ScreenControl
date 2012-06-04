@@ -127,16 +127,22 @@ public class ScreenControlActivity extends Activity {
 		searchBtn = (Button) findViewById(R.id.search);
 		lv = (ListView) findViewById(R.id.listView1);
 		progress = (ProgressBar) findViewById(R.id.progressBar1);
-		mIp.setText("ip-->" + getLocalIpAddress());
+		mIp.setText("本机ip-->" + getLocalIpAddress());
 		searchBtn.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				String mip = getLocalIpAddress();//"192.168.2.xxx";
-				String destIp = mip.substring(0, mip.lastIndexOf(".")+1);
+				final String destIp = mip.substring(0, mip.lastIndexOf(".")+1);
 				System.out.println("destIp---->"+destIp);
-				for(int i = 2;i<255;i++){
-					search(destIp+i);
-				}
+				new Thread(new Runnable() {
+					
+					@Override
+					public void run() {
+						for(int i = 2;i<255;i++){
+							search(destIp+i);
+						}
+					}
+				}).start();
 			}
 		});
 		ba = new MyAdapter();
