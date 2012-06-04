@@ -47,17 +47,16 @@ import com.rushfusion.screencontroll.util.XmlUtil;
 public class ScreenControlActivity extends Activity {
 	/** Called when the activity is first created. */
 	TextView mIp;
-	Button searchBtn;
+	Button searchBtn,clearBtn;
 	ListView lv;
 	ProgressBar progress;
 	LayoutInflater inflater;
 	
 	InetAddress stbIp;
-	List<STB> stbs;
+	List<STB> stbs = new ArrayList<STB>();
 	BaseAdapter ba;
 	Handler handler;
 	DatagramSocket s = null;
-	List<String> tests;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -69,8 +68,6 @@ public class ScreenControlActivity extends Activity {
 
 	private void init() {
 		if(checkNetworking(this)){
-			stbs = new ArrayList<STB>();
-			tests = new ArrayList<String>();
 			try {
 				s = new DatagramSocket();
 			} catch (SocketException e) {
@@ -125,9 +122,20 @@ public class ScreenControlActivity extends Activity {
 		inflater = LayoutInflater.from(this);
 		mIp = (TextView) findViewById(R.id.mIp);
 		searchBtn = (Button) findViewById(R.id.search);
+		clearBtn = (Button) findViewById(R.id.clear);
 		lv = (ListView) findViewById(R.id.listView1);
 		progress = (ProgressBar) findViewById(R.id.progressBar1);
 		mIp.setText("本机ip-->" + getLocalIpAddress());
+		ba = new MyAdapter();
+		lv.setAdapter(ba);
+		handler = new Handler(){
+
+			@Override
+			public void handleMessage(Message msg) {
+				ba.notifyDataSetChanged();
+				super.handleMessage(msg);
+			}
+		};
 		searchBtn.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -145,16 +153,16 @@ public class ScreenControlActivity extends Activity {
 				}).start();
 			}
 		});
-		ba = new MyAdapter();
-		lv.setAdapter(ba);
-		handler = new Handler(){
-
+		clearBtn.setOnClickListener(new OnClickListener() {
+			
 			@Override
-			public void handleMessage(Message msg) {
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				stbs.clear();
 				ba.notifyDataSetChanged();
-				super.handleMessage(msg);
 			}
-		};
+		});
+		
 	}
 
 
@@ -217,12 +225,22 @@ public class ScreenControlActivity extends Activity {
                         	  if(req!=null&&req.equals("stbresp")){
                         		  STB stb = new STB(map.get("IP"), map.get("taskno"),
                         				  map.get("username"), map.get("password"), map.get("mcid"));
-                        		  stbs.add(stb);
+                        		  if(!checkStbIsExist(stb))
+                        			  stbs.add(stb);
                         	  }
                           }
                       }
                    
-                     @Override
+                     private boolean checkStbIsExist(STB stb) {
+						// TODO Auto-generated method stub
+						for(STB temp:stbs){
+							if(temp.getIp().equals(stb.getIp()))
+								return true;
+						}
+						return false;
+					}
+
+					@Override
                       public void onError(int code, String desc) {
                     	 
                       }
@@ -290,7 +308,7 @@ public class ScreenControlActivity extends Activity {
 
 //				http://192.168.1.106:8888/interactive/ishow?title=%E
 				private String getUrl(final TextView stbIP, final EditText title) {
-					return "http://"+stbIP+":8888/interactive/ishow?title=?"+title.getText().toString().trim();
+					return "http://"+stbIP+":8888/interactive/ishow?title="+title.getText().toString().trim();
 				}
 			});
 			return v;

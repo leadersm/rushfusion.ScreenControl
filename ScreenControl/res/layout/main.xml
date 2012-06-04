@@ -11,11 +11,25 @@
         android:layout_height="wrap_content"
         android:text="我的Ip："
         android:textAppearance="?android:attr/textAppearanceMedium" />
-<Button
-        android:id="@+id/search"
+
+    <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="搜索" />
+        android:layout_height="wrap_content" >
+
+        <Button
+            android:id="@+id/search"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="搜索" />
+
+        <Button
+            android:id="@+id/clear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="清空" />
+    </LinearLayout>
 
     <ListView
         android:id="@+id/listView1"
