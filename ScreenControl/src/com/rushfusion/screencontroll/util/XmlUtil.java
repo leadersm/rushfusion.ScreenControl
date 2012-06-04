@@ -3,18 +3,18 @@ package com.rushfusion.screencontroll.util;
 
 public class XmlUtil {
 
-	public static final int stbPort = 6801; 
+	public static final int stbPort = 6802; 
 
 	public static byte[] SearchReq(String taskno, String mip) {
 		String xml = "<?xml version=\"1.0\" encoding=\"utf-8\" ?>"
 				+ "<Package> "
-				// <!¡ª ÃüÁîÃû³Æ -->
+				// <!â€” å‘½ä»¤åç§° -->
 				+ "<Property  name = 'cmd' vaule = 'stbresp' /> "
-				// <!¡ª ½«ÇëÇóÈÎÎñÐòºÅ»Ø´«¸ø¿Í»§¶Ë -->
+				// <!â€” å°†è¯·æ±‚ä»»åŠ¡åºå·å›žä¼ ç»™å®¢æˆ·ç«¯ -->
 				+ "<Property  name = 'taskno' vaule = '" + taskno + "' /> "
-				// <!¡ª ¿Í»§¶ËÄÚÍøIP£¬¿ÉÒÔÓÃÓÚ»ú¶¥ºÐÇø·Ö¶à¸ö¿Í»§¶ËµÄÇëÇó -->
+				// <!â€” å®¢æˆ·ç«¯å†…ç½‘IPï¼Œå¯ä»¥ç”¨äºŽæœºé¡¶ç›’åŒºåˆ†å¤šä¸ªå®¢æˆ·ç«¯çš„è¯·æ±‚ -->
 				+ "<Property  name = 'IP' vaule = '" + mip + "' /> "
-				// <!¡ª ¿Í»§¶ËÕìÌý¶Ë¿ÚºÅ -->
+				// <!â€” å®¢æˆ·ç«¯ä¾¦å¬ç«¯å£å· -->
 				+ "<Property  name = 'port' vaule = '"+ stbPort +"' /> " 
 				+ "</Package>";
 		byte[] xml_bytes = xml.getBytes();
@@ -32,36 +32,36 @@ public class XmlUtil {
 		return data;
 	}
 
-	public static byte[] PlayReq(String taskno,String mip,String title,String duration,String url) {
-		String xml = "<?xml version=\"1.0\" encoding=\"utf-8\" ?>"
-				+ "<Package> "
-				// <!¡ª ÃüÁîÃû³Æ -->
-				+ "<Property  name = 'cmd' vaule = 'playreq' /> "
-				// <!¡ª ½«ÇëÇóÈÎÎñÐòºÅ»Ø´«¸ø¿Í»§¶Ë -->
-				+ "<Property  name = 'taskno' vaule = '" + taskno + "' /> "
-				// <!¡ª ¿Í»§¶ËÄÚÍøIP£¬¿ÉÒÔÓÃÓÚ»ú¶¥ºÐÇø·Ö¶à¸ö¿Í»§¶ËµÄÇëÇó -->
-				+ "<Property  name = 'IP' vaule = '" + mip + "' /> "
-				// <!¡ª ¿Í»§¶ËÕìÌý¶Ë¿ÚºÅ -->
-				+ "<Property  name = 'port' vaule = '"+ stbPort +"' /> " 
-				// <!¡ª ²¥·Åurl -->
-				+ "<Property  name = 'url' vaule = '" + url + "' /> "
-				// <!¡ª ½ÚÄ¿Ãû³Æ -->
-				+ "<Property  name = 'title' vaule = '" + title + "' /> "
-				// <!¡ª ½ÚÄ¿Ê±³¤ -->
-				+ "<Property  name = 'duration' vaule = '" + duration + "' /> "
-				+ "</Package>";
-		byte[] xml_bytes = xml.getBytes();
-		byte[] headlen_bytes = Tools.intToByteArray(12);
-		byte[] bodylen_bytes = Tools.intToByteArray(xml_bytes.length);
-		byte[] version_bytes = Tools.intToByteArray(1);
-
-		byte[] data = new byte[12 + xml_bytes.length];
-
-		System.arraycopy(headlen_bytes, 0, data, 0, 4);
-		System.arraycopy(bodylen_bytes, 0, data, 4, 4);
-		System.arraycopy(version_bytes, 0, data, 8, 4);
-		System.arraycopy(xml_bytes, 0, data, 12, xml_bytes.length);
-
-		return data;
-	}
+//	public static byte[] PlayReq(String taskno,String mip,String title,String duration,String url) {
+//		String xml = "<?xml version=\"1.0\" encoding=\"utf-8\" ?>"
+//				+ "<Package> "
+//				// <!â€” å‘½ä»¤åç§° -->
+//				+ "<Property  name = 'cmd' vaule = 'playreq' /> "
+//				// <!â€” å°†è¯·æ±‚ä»»åŠ¡åºå·å›žä¼ ç»™å®¢æˆ·ç«¯ -->
+//				+ "<Property  name = 'taskno' vaule = '" + taskno + "' /> "
+//				// <!â€” å®¢æˆ·ç«¯å†…ç½‘IPï¼Œå¯ä»¥ç”¨äºŽæœºé¡¶ç›’åŒºåˆ†å¤šä¸ªå®¢æˆ·ç«¯çš„è¯·æ±‚ -->
+//				+ "<Property  name = 'IP' vaule = '" + mip + "' /> "
+//				// <!â€” å®¢æˆ·ç«¯ä¾¦å¬ç«¯å£å· -->
+//				+ "<Property  name = 'port' vaule = '"+ stbPort +"' /> " 
+//				// <!â€” æ’­æ”¾url -->
+//				+ "<Property  name = 'url' vaule = '" + url + "' /> "
+//				// <!â€” èŠ‚ç›®åç§° -->
+//				+ "<Property  name = 'title' vaule = '" + title + "' /> "
+//				// <!â€” èŠ‚ç›®æ—¶é•¿ -->
+//				+ "<Property  name = 'duration' vaule = '" + duration + "' /> "
+//				+ "</Package>";
+//		byte[] xml_bytes = xml.getBytes();
+//		byte[] headlen_bytes = Tools.intToByteArray(12);
+//		byte[] bodylen_bytes = Tools.intToByteArray(xml_bytes.length);
+//		byte[] version_bytes = Tools.intToByteArray(1);
+//
+//		byte[] data = new byte[12 + xml_bytes.length];
+//
+//		System.arraycopy(headlen_bytes, 0, data, 0, 4);
+//		System.arraycopy(bodylen_bytes, 0, data, 4, 4);
+//		System.arraycopy(version_bytes, 0, data, 8, 4);
+//		System.arraycopy(xml_bytes, 0, data, 12, xml_bytes.length);
+//
+//		return data;
+//	}
 }

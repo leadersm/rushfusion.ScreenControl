@@ -11,6 +11,12 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -29,6 +35,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -40,32 +47,37 @@ import com.rushfusion.screencontroll.util.XmlUtil;
 public class ScreenControlActivity extends Activity {
 	/** Called when the activity is first created. */
 	TextView mIp;
-	Button searchBtn;
+	Button searchBtn,clearBtn;
 	ListView lv;
 	ProgressBar progress;
 	LayoutInflater inflater;
 	
 	InetAddress stbIp;
-	List<STB> stbs;
+	List<STB> stbs = new ArrayList<STB>();
 	BaseAdapter ba;
 	Handler handler;
 	DatagramSocket s = null;
-	List<String> tests;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
-		stbs = new ArrayList<STB>();
-		tests = new ArrayList<String>();
-		try {
-			s = new DatagramSocket();
-		} catch (SocketException e) {
-			e.printStackTrace();
-		}
-		findByIds();
-		Thread mReceiveThread= new Thread(updateThread);  
-        mReceiveThread.start();
+		init();
+	}
+
+
+	private void init() {
+		if(checkNetworking(this)){
+			try {
+				s = new DatagramSocket();
+			} catch (SocketException e) {
+				e.printStackTrace();
+			}
+			findByIds();
+			Thread mReceiveThread= new Thread(updateThread);  
+			mReceiveThread.start();
+		}else
+			showDialog(0);
 	}
 
 
@@ -94,6 +106,7 @@ public class ScreenControlActivity extends Activity {
 			public void onClick(DialogInterface dialog, int id) { 
 				Intent intent = new Intent(Settings.ACTION_WIRELESS_SETTINGS);
 				startActivity(intent);
+				init();
 			}
 		}) 
 		.setNegativeButton("退出", new DialogInterface.OnClickListener() { 
@@ -109,30 +122,47 @@ public class ScreenControlActivity extends Activity {
 		inflater = LayoutInflater.from(this);
 		mIp = (TextView) findViewById(R.id.mIp);
 		searchBtn = (Button) findViewById(R.id.search);
+		clearBtn = (Button) findViewById(R.id.clear);
 		lv = (ListView) findViewById(R.id.listView1);
 		progress = (ProgressBar) findViewById(R.id.progressBar1);
-		mIp.setText("本机ip：" + getLocalIpAddress());
-		searchBtn.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				String mip = getLocalIpAddress();//"192.168.2.xxx";
-				String destIp = mip.substring(0, mip.lastIndexOf(".")+1);
-				System.out.println("destIp---->"+destIp);
-				for(int i = 2;i<255;i++){
-					search(destIp+i);
-				}
-			}
-		});
+		mIp.setText("本机ip-->" + getLocalIpAddress());
 		ba = new MyAdapter();
+		lv.setAdapter(ba);
 		handler = new Handler(){
 
 			@Override
 			public void handleMessage(Message msg) {
 				ba.notifyDataSetChanged();
-				lv.setAdapter(ba);
 				super.handleMessage(msg);
 			}
 		};
+		searchBtn.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				String mip = getLocalIpAddress();//"192.168.2.xxx";
+				final String destIp = mip.substring(0, mip.lastIndexOf(".")+1);
+				System.out.println("destIp---->"+destIp);
+				new Thread(new Runnable() {
+					
+					@Override
+					public void run() {
+						for(int i = 2;i<255;i++){
+							search(destIp+i);
+						}
+					}
+				}).start();
+			}
+		});
+		clearBtn.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				stbs.clear();
+				ba.notifyDataSetChanged();
+			}
+		});
+		
 	}
 
 
@@ -180,37 +210,41 @@ public class ScreenControlActivity extends Activity {
 		 try {  
             byte[] buffer = new byte[1024];  
             DatagramPacket packet = new DatagramPacket(buffer,buffer.length);  
-            while (true) {  
+            while (true) { 
                 s.receive(packet);  
                 if (packet.getLength() > 0) {  
-                    String str = new String(buffer, 0, packet  
-                            .getLength());
+                    String str = new String(buffer, 0, packet.getLength());
                     System.out.println("receive-->"+str);
-//                    tests.add(str);
                     MscpDataParser.getInstance().init(this);
-	                //�õ�udp���: datagramPacket
 	                MscpDataParser.getInstance().parse(packet,new MscpDataParser.CallBack() {
                       @Override
                       public void onParseCompleted(HashMap<String, String> map) {
-                          // TODO Auto-generated method stub
                           if( map != null ){
-                              // handle your map
                         	  String req = map.get("cmd");
                         	  System.out.println("req--->"+req);
                         	  if(req!=null&&req.equals("stbresp")){
                         		  STB stb = new STB(map.get("IP"), map.get("taskno"),
                         				  map.get("username"), map.get("password"), map.get("mcid"));
-                        		  stbs.add(stb);
+                        		  if(!checkStbIsExist(stb))
+                        			  stbs.add(stb);
                         	  }
                           }
                       }
                    
-                     @Override
+                     private boolean checkStbIsExist(STB stb) {
+						// TODO Auto-generated method stub
+						for(STB temp:stbs){
+							if(temp.getIp().equals(stb.getIp()))
+								return true;
+						}
+						return false;
+					}
+
+					@Override
                       public void onError(int code, String desc) {
-                         // TODO Auto-generated method stub
+                    	 
                       }
                   });
-                    
                     handler.sendEmptyMessageDelayed(1, 200);
                 }  
             }
@@ -225,20 +259,16 @@ public class ScreenControlActivity extends Activity {
 
 		@Override
 		public int getCount() {
-			// TODO Auto-generated method stub
 			return stbs.size();
-//			return tests.size();
 		}
 
 		@Override
 		public Object getItem(int arg0) {
-			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
 		public long getItemId(int position) {
-			// TODO Auto-generated method stub
 			return 0;
 		}
 
@@ -246,24 +276,45 @@ public class ScreenControlActivity extends Activity {
 		public View getView(int position, View convertView, ViewGroup parent) {
 			View v = inflater.inflate(R.layout.stbitem, null);
 			TextView stbName = (TextView) v.findViewById(R.id.stbName);
-			TextView stbIP = (TextView) v.findViewById(R.id.stbName);
-			Button stopBtn = (Button) v.findViewById(R.id.stop);
+			final TextView stbIP = (TextView) v.findViewById(R.id.stbName);
+			final EditText title  = (EditText) v.findViewById(R.id.title);
+			final Button stopBtn = (Button) v.findViewById(R.id.stop);
 			
 			STB stb = stbs.get(position);
 			stbName.setText(stb.getUsername());
 			stbIP.setText(stb.getIp());
 
 			stopBtn.setOnClickListener(new OnClickListener() {
-				
 				@Override
 				public void onClick(View v) {
-					// TODO Auto-generated method stub
-					
+					String url = getUrl(stbIP, title);
+					HttpGet request = new HttpGet(url);
+					HttpClient client = new DefaultHttpClient();
+					try {
+						HttpResponse response = client.execute(request);
+						if(response.getStatusLine().getStatusCode() == 200){
+							if(stopBtn.getText().toString().equals("open"))
+								stopBtn.setText("close");
+							else
+								stopBtn.setText("open");
+						}else
+							System.out.println("连接异常-statusCode-->"+response.getStatusLine().getStatusCode());
+					} catch (ClientProtocolException e) {
+						e.printStackTrace();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+
+//				http://192.168.1.106:8888/interactive/ishow?title=%E
+				private String getUrl(final TextView stbIP, final EditText title) {
+					return "http://"+stbIP+":8888/interactive/ishow?title="+title.getText().toString().trim();
 				}
 			});
 			return v;
 			
 		}
+		
 		
 	}
 }
