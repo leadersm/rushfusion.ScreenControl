@@ -3,5 +3,6 @@
 
     <string name="hello">Hello World, ScreenControlActivity!</string>
     <string name="app_name">ScreenControl</string>
+    <string name="title">请填写title</string>
 
 </resources>
