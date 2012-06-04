@@ -7,16 +7,16 @@ public class XmlUtil {
 
 	public static byte[] SearchReq(String taskno, String mip) {
 		String xml = "<?xml version=\"1.0\" encoding=\"utf-8\" ?>"
-				+ "<Package> "
-				// <!— 命令名称 -->
-				+ "<Property  name = 'cmd' vaule = 'stbresp' /> "
-				// <!— 将请求任务序号回传给客户端 -->
-				+ "<Property  name = 'taskno' vaule = '" + taskno + "' /> "
-				// <!— 客户端内网IP，可以用于机顶盒区分多个客户端的请求 -->
-				+ "<Property  name = 'IP' vaule = '" + mip + "' /> "
-				// <!— 客户端侦听端口号 -->
-				+ "<Property  name = 'port' vaule = '"+ stbPort +"' /> " 
-				+ "</Package>";
+					+ "<Package> "
+					// <!— 命令名称 -->
+					+ "<Property  name = 'cmd' vaule = 'stbresp' /> "
+					// <!— 将请求任务序号回传给客户端 -->
+					+ "<Property  name = 'taskno' vaule = '" + taskno + "' /> "
+					// <!— 客户端内网IP，可以用于机顶盒区分多个客户端的请求 -->
+					+ "<Property  name = 'IP' vaule = '" + mip + "' /> "
+					// <!— 客户端侦听端口号 -->
+					+ "<Property  name = 'port' vaule = '"+ stbPort +"' /> " 
+					+ "</Package>";
 		byte[] xml_bytes = xml.getBytes();
 		byte[] headlen_bytes = Tools.intToByteArray(12);
 		byte[] bodylen_bytes = Tools.intToByteArray(xml_bytes.length);

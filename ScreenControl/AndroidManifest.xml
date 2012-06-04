@@ -16,6 +16,7 @@
         android:label="@string/app_name" >
         <activity
             android:label="@string/app_name"
+            android:windowSoftInputMode="adjustPan"
             android:name=".ScreenControlActivity" >
             <intent-filter >
                 <action android:name="android.intent.action.MAIN" />
