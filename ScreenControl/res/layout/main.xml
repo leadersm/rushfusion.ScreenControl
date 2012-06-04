@@ -40,9 +40,10 @@
     <ListView
         android:id="@+id/listView1"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent" >
+        android:layout_height="fill_parent" 
+        android:choiceMode="none"
+	        />
 
-    </ListView>
 
     <ProgressBar
         android:id="@+id/progressBar1"

@@ -39,6 +39,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -360,6 +361,16 @@ public class ScreenControlActivity extends Activity {
 			name.setText(stb.getUsername());
 			ip.setText(stb.getIp());
 			title.setText(sp.getString("title"+position, "满秋"));
+//			title.setOnClickListener(new OnClickListener() {
+//				
+//				@Override
+//				public void onClick(View v) {
+//					// TODO Auto-generated method stub
+//					title.requestFocus();
+//					InputMethodManager m = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+//					m.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
+//				}
+//			});
 			title.addTextChangedListener(new TextWatcher() {
 
 				@Override
