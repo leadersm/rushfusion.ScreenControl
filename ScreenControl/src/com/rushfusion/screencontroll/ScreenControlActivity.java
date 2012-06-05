@@ -38,12 +38,9 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.ProgressBar;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.rushfusion.screencontroll.bean.STB;
@@ -54,14 +51,12 @@ public class ScreenControlActivity extends Activity {
 	/** Called when the activity is first created. */
 	TextView mIp;
 	Button searchBtn, clearBtn;
-	ListView lv;
-	ProgressBar progress;
 	LayoutInflater inflater;
 	String localIp = "";
 
 	InetAddress stbIp;
 	List<STB> stbs = new ArrayList<STB>();
-	BaseAdapter ba;
+	LinearLayout stblist;
 	Handler handler;
 	DatagramSocket s = null;
 	SharedPreferences sp;
@@ -151,18 +146,28 @@ public class ScreenControlActivity extends Activity {
 		mIp = (TextView) findViewById(R.id.mIp);
 		searchBtn = (Button) findViewById(R.id.search);
 		clearBtn = (Button) findViewById(R.id.clear);
-		lv = (ListView) findViewById(R.id.listView1);
-		progress = (ProgressBar) findViewById(R.id.progressBar1);
+		stblist = (LinearLayout) findViewById(R.id.list);
 		mIp.setText("本机ip-->" + getLocalIpAddress());
-		ba = new MyAdapter();
-		lv.setAdapter(ba);
 		handler = new Handler() {
 
 			@Override
 			public void handleMessage(Message msg) {
-				ba.notifyDataSetChanged();
 				super.handleMessage(msg);
+				STB stb = (STB) msg.obj;
+				stblist.addView(getView(stb));
 			}
+
+			public View getView(STB stb) {
+				ViewHolder holder = new ViewHolder();
+				View view = inflater.inflate(R.layout.stbitem, null);
+				holder.name = (TextView) view.findViewById(R.id.stbName);
+				holder.ip = (TextView) view.findViewById(R.id.stbIp);
+				holder.title = (EditText) view.findViewById(R.id.title);
+				holder.btn = (Button) view.findViewById(R.id.stop);
+				holder.init();
+				return view;
+			}
+			
 		};
 		searchBtn.setOnClickListener(new OnClickListener() {
 			@Override
@@ -192,8 +197,8 @@ public class ScreenControlActivity extends Activity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				searchBtn.setEnabled(true);
+				stblist.removeAllViews();
 				stbs.clear();
-				ba.notifyDataSetChanged();
 			}
 		});
 
@@ -255,24 +260,19 @@ public class ScreenControlActivity extends Activity {
 								public void onParseCompleted(
 										HashMap<String, String> map) {
 									if (map != null) {
-										System.out.println("IP===>"
-												+ map.get("IP"));
-										if (map.get("IP") != null
-												&& !map.get("IP").equals(
-														localIp)) {
-											STB stb = new STB(map.get("IP"),
-													"test", "test", "test",
-													"test");
-											if (!checkStbIsExist(stb))
+										System.out.println("IP===>"+ map.get("IP"));
+										if (map.get("IP") != null&& !map.get("IP").equals(localIp)) {
+											STB stb = new STB(map.get("IP"),"test", "test", "test","test");
+											if (!checkStbIsExist(stb)){
 												stbs.add(stb);
+												Message msg = new Message();
+												msg.what = 1;
+												msg.obj = stb;
+												handler.sendMessageDelayed(msg, 200);
+											}
 										}
-										// String req = map.get("cmd");
-										// System.out.println("req--->"+req);
-										// if(req!=null&&req.equals("stbresp")){
-										// }
 									}
 								}
-
 								private boolean checkStbIsExist(STB stb) {
 									// TODO Auto-generated method stub
 									for (STB temp : stbs) {
@@ -287,7 +287,6 @@ public class ScreenControlActivity extends Activity {
 
 								}
 							});
-					handler.sendEmptyMessageDelayed(1, 200);
 				}
 			}
 		} catch (SocketException e) {
@@ -304,45 +303,8 @@ public class ScreenControlActivity extends Activity {
 			s.close();
 	}
 
-	class MyAdapter extends BaseAdapter {
-
-		@Override
-		public int getCount() {
-			return stbs.size();
-		}
-
-		@Override
-		public Object getItem(int arg0) {
-			return stbs.get(arg0);
-		}
-
-		@Override
-		public long getItemId(int position) {
-			return position;
-		}
-
-		@Override
-		public View getView(final int position, View convertView,
-				ViewGroup parent) {
-			ViewHolder holder = null;
-			if (convertView == null) {
-				convertView = inflater.inflate(R.layout.stbitem, null);
-				holder = new ViewHolder();
-				holder.name = (TextView) convertView.findViewById(R.id.stbName);
-				holder.ip = (TextView) convertView.findViewById(R.id.stbIp);
-				holder.title = (EditText) convertView.findViewById(R.id.title);
-				holder.btn = (Button) convertView.findViewById(R.id.stop);
-				convertView.setTag(holder);
-			} else {
-				holder = (ViewHolder) convertView.getTag();
-			}
-			holder.init();
-			return convertView;
-		}
-	}
-
+	
 	HashMap<String, String> data = new HashMap<String, String>();
-
 	private class ViewHolder {
 
 		TextView name;
@@ -360,16 +322,6 @@ public class ScreenControlActivity extends Activity {
 			name.setText(stb.getUsername());
 			ip.setText(stb.getIp());
 			title.setText(sp.getString("title"+position, "满秋"));
-//			title.setOnClickListener(new OnClickListener() {
-//				
-//				@Override
-//				public void onClick(View v) {
-//					// TODO Auto-generated method stub
-//					title.requestFocus();
-//					InputMethodManager m = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-//					m.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
-//				}
-//			});
 			title.addTextChangedListener(new TextWatcher() {
 
 				@Override

@@ -37,18 +37,26 @@
         android:layout_height="7dip"
         android:background="#33FF33" />
 
-    <ListView
+    <!-- <ListView
         android:id="@+id/listView1"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" 
         android:choiceMode="none"
 	        />
+ -->
+
+    <ScrollView
+        android:id="@+id/scrollView1"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" >
+
+        <LinearLayout
+            android:id="@+id/list"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="vertical" >
 
-
-    <ProgressBar
-        android:id="@+id/progressBar1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone" />
+        </LinearLayout>
+    </ScrollView>
 
 </LinearLayout>
