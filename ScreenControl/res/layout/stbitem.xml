@@ -13,7 +13,7 @@
             android:id="@+id/TextView01"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="STB_Name:"
+            android:text="STB_Name: "
             android:textColor="@android:color/white"
             android:textSize="20sp" />
 
@@ -22,7 +22,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text=""
-            android:textColor="@android:color/white"
+            android:textColor="#FF0000"
             android:textSize="20sp" />
     </TableRow>
 
@@ -35,7 +35,7 @@
             android:id="@+id/TextView02"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="STB_IP:"
+            android:text="STB_IP: "
             android:textColor="@android:color/white"
             android:textSize="20sp" />
 
@@ -44,7 +44,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text=""
-            android:textColor="@android:color/white"
+            android:textColor="#FF0000"
             android:textSize="20sp" />
     </TableRow>
 
