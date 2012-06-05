@@ -3,7 +3,7 @@ package com.rushfusion.screencontroll.util;
 
 public class XmlUtil {
 
-	public static final int stbPort = 6802; 
+	public static final int STB_PORT = 6802; 
 
 	public static byte[] SearchReq(String taskno, String mip) {
 		String xml = "<?xml version=\"1.0\" encoding=\"utf-8\" ?>"
@@ -15,7 +15,7 @@ public class XmlUtil {
 					// <!— 客户端内网IP，可以用于机顶盒区分多个客户端的请求 -->
 					+ "<Property  name = 'IP' vaule = '" + mip + "' /> "
 					// <!— 客户端侦听端口号 -->
-					+ "<Property  name = 'port' vaule = '"+ stbPort +"' /> " 
+					+ "<Property  name = 'port' vaule = '"+ STB_PORT +"' /> " 
 					+ "</Package>";
 		byte[] xml_bytes = xml.getBytes();
 		byte[] headlen_bytes = Tools.intToByteArray(12);

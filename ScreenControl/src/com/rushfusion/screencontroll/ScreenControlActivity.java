@@ -33,8 +33,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.Settings;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -49,18 +47,23 @@ import com.rushfusion.screencontroll.util.XmlUtil;
 
 public class ScreenControlActivity extends Activity {
 	/** Called when the activity is first created. */
-	TextView mIp;
-	Button searchBtn, clearBtn;
-	LayoutInflater inflater;
-	String localIp = "";
+	
+	private static final int PORT = 6802;
+	
+	private TextView mIp;
+	private Button searchBtn, clearBtn;
+	private LayoutInflater inflater;
+	private String localIp = "";
+	
+	
 
-	InetAddress stbIp;
-	List<STB> stbs = new ArrayList<STB>();
-	LinearLayout stblist;
-	Handler handler;
-	DatagramSocket s = null;
-	SharedPreferences sp;
-	SharedPreferences.Editor editor;
+	private InetAddress stbIp;
+	private List<STB> stbs = new ArrayList<STB>();
+	private LinearLayout stblist;
+	private Handler handler;
+	private DatagramSocket s = null;
+	private SharedPreferences sp;
+	private SharedPreferences.Editor editor;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -72,7 +75,7 @@ public class ScreenControlActivity extends Activity {
 	private void init() {
 		if (checkNetworking(this)) {
 			try {
-				s = new DatagramSocket(6802);
+				s = new DatagramSocket(PORT);
 				sp = getSharedPreferences("interact_title",
 						MODE_WORLD_WRITEABLE);
 				editor = sp.edit();
@@ -164,7 +167,7 @@ public class ScreenControlActivity extends Activity {
 				holder.ip = (TextView) view.findViewById(R.id.stbIp);
 				holder.title = (EditText) view.findViewById(R.id.title);
 				holder.btn = (Button) view.findViewById(R.id.stop);
-				holder.init();
+				holder.init(stb);
 				return view;
 			}
 			
@@ -175,8 +178,7 @@ public class ScreenControlActivity extends Activity {
 				searchBtn.setEnabled(false);
 				showDialog(1);
 				localIp = getLocalIpAddress();// "192.168.2.xxx";
-				final String destIp = localIp.substring(0,
-						localIp.lastIndexOf(".") + 1);
+				final String destIp = localIp.substring(0,localIp.lastIndexOf(".") + 1);
 				System.out.println("destIp---->" + destIp);
 				new Thread(new Runnable() {
 
@@ -208,8 +210,7 @@ public class ScreenControlActivity extends Activity {
 		try {
 			byte[] data = XmlUtil.SearchReq("123456", getLocalIpAddress());
 			stbIp = InetAddress.getByName(destip);
-			DatagramPacket p = new DatagramPacket(data, data.length, stbIp,
-					XmlUtil.stbPort);
+			DatagramPacket p = new DatagramPacket(data, data.length, stbIp,XmlUtil.STB_PORT);
 			s.send(p);
 		} catch (SocketException e) {
 			e.printStackTrace();
@@ -261,7 +262,7 @@ public class ScreenControlActivity extends Activity {
 										HashMap<String, String> map) {
 									if (map != null) {
 										System.out.println("IP===>"+ map.get("IP"));
-										if (map.get("IP") != null&& !map.get("IP").equals(localIp)) {
+										if (!map.get("IP").equals("null")&& !map.get("IP").equals(localIp)) {
 											STB stb = new STB(map.get("IP"),"test", "test", "test","test");
 											if (!checkStbIsExist(stb)){
 												stbs.add(stb);
@@ -304,64 +305,34 @@ public class ScreenControlActivity extends Activity {
 	}
 
 	
-	HashMap<String, String> data = new HashMap<String, String>();
 	private class ViewHolder {
 
 		TextView name;
 		TextView ip;
 		EditText title;
 		Button btn;
-		int position;
 
-		public ViewHolder() {
-
-		}
-
-		public void init() {
-			STB stb = stbs.get(position);
+		public void init(final STB stb) {
 			name.setText(stb.getUsername());
 			ip.setText(stb.getIp());
-			title.setText(sp.getString("title"+position, "满秋"));
-			title.addTextChangedListener(new TextWatcher() {
-
-				@Override
-				public void onTextChanged(CharSequence s, int start,
-						int before, int count) {
-					// TODO Auto-generated method stub
-
-				}
-
-				@Override
-				public void beforeTextChanged(CharSequence s, int start,
-						int count, int after) {
-					// TODO Auto-generated method stub
-
-				}
-
-				@Override
-				public void afterTextChanged(Editable s) {
-					// TODO Auto-generated method stub
-					data.put("title" + position, s.toString());
-				}
-			});
-
+			title.setText(sp.getString("title"+stb.getIp(), "满秋"));
 			btn.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					String url = getUrl(stbs.get(position).getIp(),data.get("title" + position));
+					String url = getUrl(stb.getIp(),title.getText().toString());
 					System.out.println("open/close url==>" + url);
 					HttpGet request = new HttpGet(url);
 					request.setHeader("Content-Type", "charset:UTF-8");
 					HttpClient client = new DefaultHttpClient();
 					HttpParams params = client.getParams();
-					HttpConnectionParams.setConnectionTimeout(params, 3000);
+					HttpConnectionParams.setConnectionTimeout(params, 5000);
 					HttpConnectionParams.setSoTimeout(params, 5000);
 					request.setParams(params);
 					try {
 						HttpResponse response = client.execute(request);
 						if (response.getStatusLine().getStatusCode() == 200) {
 							if (btn.getText().toString().equals("open")) {
-								editor.putString("title" + position,title.getText().toString());
+								editor.putString("title"+stb.getIp(),title.getText().toString());
 								editor.commit();
 								btn.setText("close");
 							} else
