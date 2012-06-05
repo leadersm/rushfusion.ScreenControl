@@ -50,6 +50,9 @@ public class ScreenControlActivity extends Activity {
 	/** Called when the activity is first created. */
 	
 	private static final int PORT = 6802;
+	private static final int DIALOG_NETWORK = 0;
+	private static final int DIALOG_PROGRESS = 1;
+	
 	
 	private TextView mIp;
 	private Button searchBtn, clearBtn;
@@ -85,7 +88,7 @@ public class ScreenControlActivity extends Activity {
 				e.printStackTrace();
 			}
 		} else
-			showDialog(0);
+			showDialog(DIALOG_NETWORK);
 	}
 
 	/**
@@ -107,7 +110,7 @@ public class ScreenControlActivity extends Activity {
 	@Override
 	protected Dialog onCreateDialog(int id) {
 		switch (id) {
-		case 0:
+		case DIALOG_NETWORK:
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
 			builder.setTitle("网络连接提示");
 			builder.setMessage("当前没有可用网络，是否设置?")
@@ -130,7 +133,7 @@ public class ScreenControlActivity extends Activity {
 								}
 							});
 			return builder.create();
-		case 1:
+		case DIALOG_PROGRESS:
 			ProgressDialog dialog = new ProgressDialog(this);
 			dialog.setTitle("提示!");
 			dialog.setMessage("正在搜索,请稍后...");
@@ -174,7 +177,7 @@ public class ScreenControlActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				searchBtn.setEnabled(false);
-				showDialog(1);
+				showDialog(DIALOG_PROGRESS);
 				localIp = getLocalIpAddress();// "192.168.2.xxx";
 				final String destIp = localIp.substring(0,localIp.lastIndexOf(".") + 1);
 				System.out.println("destIp---->" + destIp);
@@ -186,7 +189,7 @@ public class ScreenControlActivity extends Activity {
 							if (!localIp.equals(destIp + i))
 								search(destIp + i);
 						}
-						dismissDialog(1);
+						dismissDialog(DIALOG_PROGRESS);
 					}
 				}).start();
 			}
@@ -331,11 +334,14 @@ public class ScreenControlActivity extends Activity {
 						HttpResponse response = client.execute(request);
 						if (response.getStatusLine().getStatusCode() == 200) {
 							if (btn.getText().toString().equals("open")) {
+								title.setEnabled(false);
 								editor.putString("title"+stb.getIp(),title.getText().toString());
 								editor.commit();
 								btn.setText("close");
-							} else
+							} else{
 								btn.setText("open");
+								title.setEnabled(true);
+							}
 						} else
 							Toast.makeText(getApplicationContext(),"连接异常-statusCode-->"+ response.getStatusLine().getStatusCode(),1).show();
 					} catch (ClientProtocolException e) {
