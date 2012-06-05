@@ -40,6 +40,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.rushfusion.screencontroll.bean.STB;
 import com.rushfusion.screencontroll.util.MscpDataParser;
@@ -130,12 +131,10 @@ public class ScreenControlActivity extends Activity {
 							});
 			return builder.create();
 		case 1:
-
 			ProgressDialog dialog = new ProgressDialog(this);
 			dialog.setTitle("提示!");
 			dialog.setMessage("正在搜索,请稍后...");
 			return dialog;
-
 		default:
 			break;
 		}
@@ -170,6 +169,7 @@ public class ScreenControlActivity extends Activity {
 			}
 			
 		};
+		
 		searchBtn.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -191,6 +191,7 @@ public class ScreenControlActivity extends Activity {
 				}).start();
 			}
 		});
+		
 		clearBtn.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -336,7 +337,7 @@ public class ScreenControlActivity extends Activity {
 							} else
 								btn.setText("open");
 						} else
-							System.out.println("连接异常-statusCode-->"+ response.getStatusLine().getStatusCode());
+							Toast.makeText(getApplicationContext(),"连接异常-statusCode-->"+ response.getStatusLine().getStatusCode(),1).show();
 					} catch (ClientProtocolException e) {
 						e.printStackTrace();
 					} catch (IOException e) {
