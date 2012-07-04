@@ -53,20 +53,65 @@
         android:layout_width="wrap_content"
         android:layout_height="3dip"
         android:background="#BB7700" />
-
-    <EditText
-        android:id="@+id/title"
+
+    <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="@string/title" >
-    </EditText>
+        android:visibility="gone"
+        android:orientation="vertical" >
 
-    <Button
-        android:id="@+id/stop"
+        <EditText
+            android:id="@+id/title"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="@string/title" >
+
+            <requestFocus />
+        </EditText>
+
+        <Button
+            android:id="@+id/open_stop"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="open" />
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="open" />
+        android:gravity="center_horizontal" >
+
+        <Button
+            android:id="@+id/play"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="播放" />
+
+        <Button
+            android:id="@+id/pause"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="暂停" />
+
+        <Button
+            android:id="@+id/stop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="停止" />
+
+        <Button
+            android:id="@+id/ff"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="快进" />
+
+        <Button
+            android:id="@+id/fb"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="快退" />
+    </LinearLayout>
 
     <View
         android:id="@+id/view1"

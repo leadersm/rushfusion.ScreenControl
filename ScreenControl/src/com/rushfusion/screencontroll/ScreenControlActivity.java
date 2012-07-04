@@ -49,7 +49,7 @@ import com.rushfusion.screencontroll.util.XmlUtil;
 public class ScreenControlActivity extends Activity {
 	/** Called when the activity is first created. */
 	
-	private static final int PORT = 6802;
+	private static final int PORT = 6806;
 	private static final int DIALOG_NETWORK = 0;
 	private static final int DIALOG_PROGRESS = 1;
 	
@@ -59,7 +59,6 @@ public class ScreenControlActivity extends Activity {
 	private LayoutInflater inflater;
 	private String localIp = "";
 
-	private InetAddress stbIp;
 	private List<STB> stbs = new ArrayList<STB>();
 	private LinearLayout stblist;
 	private Handler handler;
@@ -165,7 +164,11 @@ public class ScreenControlActivity extends Activity {
 				holder.name = (TextView) view.findViewById(R.id.stbName);
 				holder.ip = (TextView) view.findViewById(R.id.stbIp);
 				holder.title = (EditText) view.findViewById(R.id.title);
-				holder.btn = (Button) view.findViewById(R.id.stop);
+				holder.play = (Button) view.findViewById(R.id.play);
+				holder.pause = (Button) view.findViewById(R.id.pause);
+				holder.stop = (Button) view.findViewById(R.id.stop);
+				holder.ff = (Button) view.findViewById(R.id.ff);
+				holder.fb = (Button) view.findViewById(R.id.fb);
 				holder.init(stb);
 				return view;
 			}
@@ -209,7 +212,7 @@ public class ScreenControlActivity extends Activity {
 
 	public void search(String destip) {
 		try {
-			stbIp = InetAddress.getByName(destip);
+			InetAddress stbIp = InetAddress.getByName(destip);
 			byte[] data = XmlUtil.SearchReq("123456", getLocalIpAddress());
 			DatagramPacket p = new DatagramPacket(data, data.length, stbIp,XmlUtil.STB_PORT);
 			s.send(p);
@@ -311,50 +314,67 @@ public class ScreenControlActivity extends Activity {
 		TextView name;
 		TextView ip;
 		EditText title;
-		Button btn;
-
+		Button play,pause,stop,ff,fb;
+		
 		public void init(final STB stb) {
 			name.setText(stb.getUsername());
 			ip.setText(stb.getIp());
 			title.setText(sp.getString("title"+stb.getIp(), "满秋"));
-			btn.setOnClickListener(new OnClickListener() {
+			play.setOnClickListener(new OnClickListener() {
+				
 				@Override
 				public void onClick(View v) {
-					String url = getUrl(stb.getIp(),title.getText().toString());
-					System.out.println("open/close url==>" + url);
-					HttpGet request = new HttpGet(url);
-					request.setHeader("Content-Type", "charset:UTF-8");
-					HttpClient client = new DefaultHttpClient();
-					HttpParams params = client.getParams();
-					HttpConnectionParams.setConnectionTimeout(params, 5000);
-					HttpConnectionParams.setSoTimeout(params, 5000);
-					request.setParams(params);
+					// TODO Auto-generated method stub
 					try {
-						HttpResponse response = client.execute(request);
-						if (response.getStatusLine().getStatusCode() == 200) {
-							if (btn.getText().toString().equals("open")) {
-								title.setEnabled(false);
-								editor.putString("title"+stb.getIp(),title.getText().toString());
-								editor.commit();
-								btn.setText("close");
-							} else{
-								btn.setText("open");
-								title.setEnabled(true);
-							}
-						} else
-							Toast.makeText(getApplicationContext(),"连接异常-statusCode-->"+ response.getStatusLine().getStatusCode(),1).show();
-					} catch (ClientProtocolException e) {
-						e.printStackTrace();
+						byte[] data = XmlUtil.PlayReq(1, stb.getIp(), "喜洋洋灰太狼", 1000, 
+								"http://tvsrv.webhop.net/video/ccd935e8-8f6e-4d35-96d5-7bac3d9329e6.mp4");
+						InetAddress stbIp = InetAddress.getByName(stb.getIp());
+						DatagramPacket p = new DatagramPacket(data, data.length, stbIp,XmlUtil.STB_PORT);
+						s.send(p);
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
 				}
-
-				private String getUrl(String stbIP, String title) {
-					return "http://" + stbIP + ":8888/interactive/ishow?title="+ title;
+			});
+			pause.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+					
 				}
 			});
+			stop.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+					
+				}
+			});
+			ff.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+					
+				}
+			});
+			fb.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+					
+				}
+			});
+			
+			
+			
 		}
+		
+		
+		
 	}
 
 }

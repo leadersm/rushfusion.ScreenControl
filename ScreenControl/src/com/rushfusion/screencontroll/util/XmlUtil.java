@@ -2,13 +2,13 @@ package com.rushfusion.screencontroll.util;
 
 public class XmlUtil {
 
-	public static final int STB_PORT = 6802;
+	public static final int STB_PORT = 6806;
 
 	public static byte[] SearchReq(String taskno, String mip) {
 		String xml = "<?xml version=\"1.0\" encoding=\"utf-8\" ?>"
 				+ "<Package> "
 				// <!— 命令名称 -->
-				+ "<Property  name = 'cmd' vaule = 'stbresp' /> "
+				+ "<Property  name = 'cmd' vaule = 'searchreq' /> "
 				// <!— 将请求任务序号回传给客户端 -->
 				+ "<Property  name = 'taskno' vaule = '" + taskno + "' /> "
 				// <!— 客户端内网IP，可以用于机顶盒区分多个客户端的请求 -->
