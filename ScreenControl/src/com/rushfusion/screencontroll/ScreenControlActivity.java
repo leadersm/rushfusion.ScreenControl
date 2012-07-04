@@ -78,8 +78,7 @@ public class ScreenControlActivity extends Activity {
 		if (checkNetworking(this)) {
 			try {
 				s = new DatagramSocket(PORT);
-				sp = getSharedPreferences("interact_title",
-						MODE_WORLD_WRITEABLE);
+				sp = getSharedPreferences("interact_title",MODE_WORLD_WRITEABLE);
 				editor = sp.edit();
 				findByIds();
 				Thread mReceiveThread = new Thread(updateThread);
@@ -210,8 +209,8 @@ public class ScreenControlActivity extends Activity {
 
 	public void search(String destip) {
 		try {
-			byte[] data = XmlUtil.SearchReq("123456", getLocalIpAddress());
 			stbIp = InetAddress.getByName(destip);
+			byte[] data = XmlUtil.SearchReq("123456", getLocalIpAddress());
 			DatagramPacket p = new DatagramPacket(data, data.length, stbIp,XmlUtil.STB_PORT);
 			s.send(p);
 		} catch (SocketException e) {
